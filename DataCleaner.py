@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import re
 f = open ("Datamining2012/survey.csv")
 titles = []
 first_line = True
@@ -22,7 +25,41 @@ for line in f:
         people.append(parse(line,titles))
 f.close()
 
+def clean_float(v):
+    v = v.replace(',','.')
+    v = v.replace('?','')
+    v = v.replace("π",'3.14')
+    try :
+        return float(v)
+    except :
+        return "Error: " + v
+
+def clean_int(v):
+    v = v.replace(',','.')
+    v = v.replace('?','')
+    try :
+        return int(v)
+    except :
+        return "Error: " + v
+
+def clean_string(v):
+    return v
+
+def clean_bool(v):
+    v = v.upper()
+    if re.match('YES',v):
+        return True
+    if re.match('NO',v):
+        return False
+    return "Error: " + v
+
+types = {'randReal': clean_float, 'yearsUniversity': clean_float, 'randInt': clean_int, 'ann': clean_string, 'englishSpeaker': clean_int, 'therbfortt': clean_string, 'danishMountains': clean_bool, 'solarSystem\n': clean_int, 'programmingSkill': clean_int, 'togelius': clean_string, 'apriori': clean_bool, 'favAnimal': clean_string, 'canteenFood': clean_string, 'favSQLServ': clean_string, 'sqrt': clean_float, 'yannakakis': clean_string, 'fedUpWWinter': clean_bool, 'sql': clean_string, 'favProgLang': clean_string, 'randReal2': clean_float, 'svm': clean_bool, 'age': clean_int, 'favColour': clean_string, 'favOS': clean_string}
+
+#for person in people:
 for person in people:
-    v = person['randReal']
-    print(v)
-    print(float(v))
+    for k, v in person.iteritems():
+        person[k] = types[k](v)
+
+#CLEAN DONE.
+
+print(people)
